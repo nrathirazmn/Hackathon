@@ -1,98 +1,222 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+// app/(tabs)/index.tsx
+import { useEffect, useCallback } from "react";
+import { View, Text, Pressable, StyleSheet, ScrollView, Dimensions } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { router } from "expo-router";
+import { usePoints } from "@/context/points";
+import { useFocusEffect } from "@react-navigation/native";
 
-import { HelloWave } from '@/components/hello-wave';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { Link } from 'expo-router';
+const MATCHA_DEEP = "#0B4F3F";
+const STRAWB = "#FF6B8B";
+const CHIP_BG = "#EAF7ED";
+
+const { width } = Dimensions.get("window");
+const SLIDE_W = width - 40;
 
 export default function HomeScreen() {
-  return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <Link href="/modal">
-          <Link.Trigger>
-            <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-          </Link.Trigger>
-          <Link.Preview />
-          <Link.Menu>
-            <Link.MenuAction title="Action" icon="cube" onPress={() => alert('Action pressed')} />
-            <Link.MenuAction
-              title="Share"
-              icon="square.and.arrow.up"
-              onPress={() => alert('Share pressed')}
-            />
-            <Link.Menu title="More" icon="ellipsis">
-              <Link.MenuAction
-                title="Delete"
-                icon="trash"
-                destructive
-                onPress={() => alert('Delete pressed')}
-              />
-            </Link.Menu>
-          </Link.Menu>
-        </Link>
+  const { points, setPoints, addPoints } = usePoints();
 
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+  // --- mock fetch; replace with your real API call ---
+  const fetchLatestPoints = useCallback(async () => {
+    // const res = await fetch(`${API}/points/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
+    // const json = await res.json();
+    // setPoints(json.total);
+    setPoints(points); // keep state; replace with real value later
+  }, [points, setPoints]);
+
+  useEffect(() => {
+    fetchLatestPoints();
+  }, [fetchLatestPoints]);
+
+  // Refresh whenever this screen regains focus
+  useFocusEffect(
+    useCallback(() => {
+      fetchLatestPoints();
+    }, [fetchLatestPoints])
+  );
+
+  const categories = ["Paper", "Plastic", "Glass", "Metal", "E-waste"];
+
+  const slides = [
+    { id: "s1", title: "Earn 2x points this week!", color: "#FDECF2" },
+    { id: "s2", title: "Scan to learn sorting tips", color: "#EAF7ED" },
+    { id: "s3", title: "Leaderboard: Top Recyclers", color: "#EAF2FD" },
+  ];
+
+  const campaigns = [
+    { id: "c1", title: "Petaling Clean-Up", sub: "Sep 28 – Oct 5", color: "#FFF5E6" },
+    { id: "c2", title: "Plastic Free Week", sub: "Partner: 1 Utama", color: "#F1FFF4" },
+  ];
+
+  const facts = [
+    { id: "f1", title: "Aluminum can be recycled forever." },
+    { id: "f2", title: "Recycling 1 bottle saves energy for hours." },
+    { id: "f3", title: "Clean & dry items increase recyclability." },
+  ];
+
+  return (
+    <ScrollView style={{ flex: 1, backgroundColor: "#fff" }} contentContainerStyle={styles.container}>
+      {/* Header: Title + Points
+      <View style={styles.headerRow}>
+        <Text style={styles.title}>CSa</Text>
+
+        <Pressable onPress={() => router.push("/(tabs)/points")} style={styles.pointsPill} hitSlop={10}>
+          <Ionicons name="star" size={18} color="#fff" />
+          <Text style={styles.pointsText}>{points.toLocaleString()}</Text>
+        </Pressable>
+      </View> */}
+
+      {/* (dev) add 10 points
+      <Pressable onPress={() => addPoints(10)} style={styles.devBtn}>
+        <Text style={{ color: "#fff", fontWeight: "700" }}>+10 test points</Text>
+      </Pressable> */}
+
+      {/* Subheading */}
+      <Text style={styles.subtitle}>Quick categories</Text>
+
+      {/* Category chips */}
+      <View style={styles.grid}>
+        {categories.map((c) => (
+          <Pressable key={c} style={styles.card}>
+            <Text style={styles.cardText}>{c}</Text>
+          </Pressable>
+        ))}
+      </View>
+
+      {/* Slider */}
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        snapToInterval={SLIDE_W + 12}
+        decelerationRate="fast"
+        style={{ marginTop: 18 }}
+      >
+        {slides.map((s, idx) => (
+          <View
+            key={s.id}
+            style={[
+              styles.slide,
+              { backgroundColor: s.color, width: SLIDE_W, marginLeft: idx === 0 ? 0 : 12 },
+            ]}
+          >
+            <Text style={styles.slideTitle}>{s.title}</Text>
+            <Pressable style={styles.slideCta}>
+              <Text style={styles.slideCtaText}>Learn more</Text>
+              <Ionicons name="chevron-forward" size={16} color="#fff" />
+            </Pressable>
+          </View>
+        ))}
+      </ScrollView>
+
+      {/* Two-column: Campaigns & Fun Facts */}
+      <View style={styles.twocol}>
+        <View style={styles.col}>
+          <Text style={styles.sectionTitle}>Ongoing Campaigns</Text>
+          {campaigns.map((c) => (
+            <Pressable key={c.id} style={[styles.tile, { backgroundColor: c.color }]}>
+              <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+                <Ionicons name="megaphone-outline" color={MATCHA_DEEP} size={18} />
+                <Text style={styles.tileTitle}>{c.title}</Text>
+              </View>
+              <Text style={styles.tileSub}>{c.sub}</Text>
+              <Pressable style={styles.tileBtn}>
+                <Text style={styles.tileBtnText}>View</Text>
+              </Pressable>
+            </Pressable>
+          ))}
+        </View>
+
+        <View style={styles.col}>
+          <Text style={styles.sectionTitle}>Fun Facts</Text>
+          {facts.map((f) => (
+            <View key={f.id} style={[styles.tile, { backgroundColor: "#F7F9FF" }]}>
+              <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+                <Ionicons name="leaf-outline" color={STRAWB} size={18} />
+                <Text style={styles.tileTitle}>{f.title}</Text>
+              </View>
+            </View>
+          ))}
+        </View>
+      </View>
+
+      <Text style={styles.hint}>Not sure? Use the Scan tab below.</Text>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
+  container: { paddingTop: 24, paddingHorizontal: 20, paddingBottom: 24 },
+  headerRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingTop: 30,
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
+  title: { fontSize: 28, fontWeight: "800", color: "#0F172A" },
+
+  pointsPill: {
+    backgroundColor: STRAWB,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 999,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 4,
+    elevation: 3,
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+  pointsText: { color: "#fff", fontWeight: "800" },
+
+  devBtn: {
+    alignSelf: "flex-start",
+    marginTop: 10,
+    backgroundColor: "#10B981",
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 8,
   },
+
+  subtitle: { fontSize: 16, color: "#374151", marginTop: 10, marginBottom: 12 },
+
+  grid: { flexDirection: "row", flexWrap: "wrap", gap: 12 },
+  card: { backgroundColor: CHIP_BG, paddingVertical: 16, paddingHorizontal: 18, borderRadius: 12 },
+  cardText: { fontSize: 16, fontWeight: "700", color: MATCHA_DEEP },
+
+  slide: { borderRadius: 16, padding: 16, minHeight: 120, justifyContent: "space-between" },
+  slideTitle: { fontSize: 16, fontWeight: "800", color: "#0F172A" },
+  slideCta: {
+    alignSelf: "flex-start",
+    backgroundColor: MATCHA_DEEP,
+    borderRadius: 999,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+  },
+  slideCtaText: { color: "#fff", fontWeight: "700" },
+
+  twocol: { flexDirection: "row", gap: 12, marginTop: 20 },
+  col: { flex: 1, gap: 12 },
+
+  sectionTitle: { fontSize: 16, fontWeight: "800", color: "#0F172A", marginBottom: 2 },
+
+  tile: { borderRadius: 14, padding: 14, gap: 8 },
+  tileTitle: { fontSize: 14, fontWeight: "700", color: "#0F172A", flexShrink: 1 },
+  tileSub: { fontSize: 12, color: "#475569" },
+
+  tileBtn: {
+    alignSelf: "flex-start",
+    backgroundColor: STRAWB,
+    borderRadius: 999,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    marginTop: 4,
+  },
+  tileBtnText: { color: "#fff", fontWeight: "700", fontSize: 12 },
+
+  hint: { marginTop: 18, color: "#6b7280" },
 });
