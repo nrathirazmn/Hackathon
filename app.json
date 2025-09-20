@@ -1,5 +1,7 @@
 {
   "expo": {
+    "extra": {
+      "EXPO_PUBLIC_MAPTILER_KEY": "NjAa0wa26DgC02xDBRmv"},
     "name": "Hackathon",
     "slug": "Hackathon",
     "version": "1.0.0",
