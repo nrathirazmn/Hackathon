@@ -1,7 +1,9 @@
 // C:\Users\Veshal\Desktop\AI Hackkathon\Hackathon\app\(tabs)\scanner.tsx
 import { CameraView, useCameraPermissions } from "expo-camera";
+import { useRouter } from 'expo-router';
 import { useEffect, useRef, useState } from "react";
 import { ActivityIndicator, Alert, Pressable, StyleSheet, Text, View } from "react-native";
+
 
 // ✅ Your deployed API Gateway URL (no /prod). Endpoint path is /classify.
 const API_URL = "https://6yfvzbarza.execute-api.ap-southeast-1.amazonaws.com/classify";
@@ -24,6 +26,8 @@ export default function ScannerScreen() {
   const [permission, requestPermission] = useCameraPermissions();
   const [busy, setBusy] = useState(false);
   const [result, setResult] = useState<ApiResponse | null>(null);
+
+  const router = useRouter();
 
   useEffect(() => {
     if (!permission || !permission.granted) requestPermission();
@@ -84,7 +88,17 @@ export default function ScannerScreen() {
             "ℹ️ Check locally";
       const note = data.guidance?.note ? `\n${data.guidance.note}` : "";
 
-      Alert.alert("Scan Result", `${data.top_class.toUpperCase()} (${conf}%)\n${badge}${note}`);
+      Alert.alert(
+        "Scan Result",
+        `${data.top_class.toUpperCase()} (${conf}%)\n${badge}${note}`,
+        [
+          { text: "Cancel", style: "cancel" },
+          {
+            text: "Go to Chatbot",
+            onPress: () => router.push("/chatbot"), // navigate on button press
+          },
+        ]
+      );
     } catch (e: any) {
       console.error(e);
       Alert.alert("Oops", "Failed to classify. Please try again.");
