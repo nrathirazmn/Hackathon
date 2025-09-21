@@ -1,9 +1,9 @@
 // app/(tabs)/index.tsx
-import { useEffect, useCallback, useRef } from "react";
-import { View, Text, StyleSheet, ScrollView, Dimensions, Image } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
 import { usePoints } from "@/context/points";
+import { Ionicons } from "@expo/vector-icons";
 import { useFocusEffect } from "@react-navigation/native";
+import { useCallback, useEffect, useRef } from "react";
+import { Dimensions, Image, ScrollView, StyleSheet, Text, View } from "react-native";
 
 const PRIMARY = "#74A12E";
 const SECONDARY = "#FA5053";
@@ -33,17 +33,18 @@ export default function HomeScreen() {
   );
 
   // Data
-  const slides = [
-    { id: "s1", title: "Earn 2x points this week!", color: "#FDECF2", image: "https://picsum.photos/400/200?1" },
-    { id: "s2", title: "Scan to learn sorting tips", color: "#EAF7ED", image: "https://picsum.photos/400/200?2" },
-    { id: "s3", title: "Leaderboard: Top Recyclers", color: "#EAF2FD", image: "https://picsum.photos/400/200?3" },
-  ];
+const slides = [
+  { id: "s1", title: "Earn 2x points this week!", color: "#FDECF2", image: require("../../assets/images/2Xpoints.png") },
+  { id: "s2", title: "Scan to learn sorting tips", color: "#EAF7ED", image: require("../../assets/images/tips.jpg") },
+  { id: "s3", title: "Leaderboard: Top Recyclers", color: "#EAF2FD", image: require("../../assets/images/leaderboard.jpg") },
+];
 
-  const campaigns = [
-    { id: "c1", title: "Petaling Clean-Up", sub: "Sep 28 – Oct 5", color: "#FFF5E6", image: "https://picsum.photos/200/200?4" },
-    { id: "c2", title: "Plastic Free Week", sub: "Partner: 1 Utama", color: "#F1FFF4", image: "https://picsum.photos/200/200?5" },
-    { id: "c3", title: "Recycle Fest", sub: "Nov 1 – Nov 10", color: "#E6F7FF", image: "https://picsum.photos/200/200?6" },
-  ];
+const campaigns = [
+  { id: "c1", title: "Petaling Clean-Up", sub: "Sep 28 – Oct 5", color: "#FFF5E6", image: require("../../assets/images/cleanup.jpg") },
+  { id: "c2", title: "Plastic Free Week", sub: "Partner: 1 Utama", color: "#F1FFF4", image: require("../../assets/images/noplastic.jpg") },
+  { id: "c3", title: "Recycle Fest", sub: "Nov 1 – Nov 10", color: "#E6F7FF", image: require("../../assets/images/festival.jpg") },
+];
+
 
   const facts = [
     { id: "f1", title: "Aluminum can be recycled forever." },
@@ -87,7 +88,7 @@ export default function HomeScreen() {
               { backgroundColor: s.color, width: SLIDE_W, marginLeft: idx === 0 ? 0 : 16 },
             ]}
           >
-            <Image source={{ uri: s.image }} style={styles.slideImage} />
+            <Image source={s.image} style={styles.slideImage} />
             <Text style={styles.slideTitle}>{s.title}</Text>
           </View>
         ))}
@@ -110,7 +111,7 @@ export default function HomeScreen() {
               { backgroundColor: c.color, marginLeft: idx === 0 ? 0 : 16 },
             ]}
           >
-            <Image source={{ uri: c.image }} style={styles.campaignImage} />
+            <Image source={c.image} style={styles.campaignImage} />
             <Text style={styles.squareTitle}>{c.title}</Text>
             <Text style={styles.squareSub}>{c.sub}</Text>
           </View>
