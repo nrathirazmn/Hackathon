@@ -1,0 +1,10 @@
+{
+    "name": "classify-fn",
+    "version": "1.0.0",
+    "type": "module",
+    "main": "index.mjs",
+    "license": "MIT",
+    "dependencies": {
+        "@aws-sdk/client-sagemaker-runtime": "^3.620.0"
+    }
+}

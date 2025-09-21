@@ -4,6 +4,8 @@ import { Ionicons } from "@expo/vector-icons";
 import { useFocusEffect } from "@react-navigation/native";
 import { useCallback, useEffect, useRef } from "react";
 import { Dimensions, Image, ScrollView, StyleSheet, Text, View } from "react-native";
+import 'react-native-get-random-values';
+import 'react-native-url-polyfill/auto';
 
 const PRIMARY = "#74A12E";
 const SECONDARY = "#FA5053";
