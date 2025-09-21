@@ -1,222 +1,179 @@
 // app/(tabs)/index.tsx
-import { useEffect, useCallback } from "react";
-import { View, Text, Pressable, StyleSheet, ScrollView, Dimensions } from "react-native";
+import { useEffect, useCallback, useRef } from "react";
+import { View, Text, StyleSheet, ScrollView, Dimensions, Image } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { router } from "expo-router";
 import { usePoints } from "@/context/points";
 import { useFocusEffect } from "@react-navigation/native";
 
-const MATCHA_DEEP = "#0B4F3F";
-const STRAWB = "#FF6B8B";
-const CHIP_BG = "#EAF7ED";
+const PRIMARY = "#74A12E";
+const SECONDARY = "#FA5053";
+const BG = "#F9FAFB";
 
 const { width } = Dimensions.get("window");
-const SLIDE_W = width - 40;
+const SLIDE_W = width * 0.85; 
+const SQUARE_W = (width - 60) / 2; 
 
 export default function HomeScreen() {
-  const { points, setPoints, addPoints } = usePoints();
+  const { points, setPoints } = usePoints();
+  const scrollRef = useRef<ScrollView>(null);
+  const currentIndex = useRef(0);
 
-  // --- mock fetch; replace with your real API call ---
   const fetchLatestPoints = useCallback(async () => {
-    // const res = await fetch(`${API}/points/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
-    // const json = await res.json();
-    // setPoints(json.total);
-    setPoints(points); // keep state; replace with real value later
+    setPoints(points); // mock, replace later
   }, [points, setPoints]);
 
   useEffect(() => {
     fetchLatestPoints();
   }, [fetchLatestPoints]);
 
-  // Refresh whenever this screen regains focus
   useFocusEffect(
     useCallback(() => {
       fetchLatestPoints();
     }, [fetchLatestPoints])
   );
 
-  const categories = ["Paper", "Plastic", "Glass", "Metal", "E-waste"];
-
+  // Data
   const slides = [
-    { id: "s1", title: "Earn 2x points this week!", color: "#FDECF2" },
-    { id: "s2", title: "Scan to learn sorting tips", color: "#EAF7ED" },
-    { id: "s3", title: "Leaderboard: Top Recyclers", color: "#EAF2FD" },
+    { id: "s1", title: "Earn 2x points this week!", color: "#FDECF2", image: "https://picsum.photos/400/200?1" },
+    { id: "s2", title: "Scan to learn sorting tips", color: "#EAF7ED", image: "https://picsum.photos/400/200?2" },
+    { id: "s3", title: "Leaderboard: Top Recyclers", color: "#EAF2FD", image: "https://picsum.photos/400/200?3" },
   ];
 
   const campaigns = [
-    { id: "c1", title: "Petaling Clean-Up", sub: "Sep 28 – Oct 5", color: "#FFF5E6" },
-    { id: "c2", title: "Plastic Free Week", sub: "Partner: 1 Utama", color: "#F1FFF4" },
+    { id: "c1", title: "Petaling Clean-Up", sub: "Sep 28 – Oct 5", color: "#FFF5E6", image: "https://picsum.photos/200/200?4" },
+    { id: "c2", title: "Plastic Free Week", sub: "Partner: 1 Utama", color: "#F1FFF4", image: "https://picsum.photos/200/200?5" },
+    { id: "c3", title: "Recycle Fest", sub: "Nov 1 – Nov 10", color: "#E6F7FF", image: "https://picsum.photos/200/200?6" },
   ];
 
   const facts = [
     { id: "f1", title: "Aluminum can be recycled forever." },
-    { id: "f2", title: "Recycling 1 bottle saves energy for hours." },
+    { id: "f2", title: "Recycling 1 bottle saves enough energy for hours." },
     { id: "f3", title: "Clean & dry items increase recyclability." },
+    { id: "f4", title: "Glass is 100% recyclable with no loss of quality." },
   ];
 
+  // Auto-play effect for promotions
+  useEffect(() => {
+    const interval = setInterval(() => {
+      currentIndex.current = (currentIndex.current + 1) % slides.length;
+      if (scrollRef.current) {
+        scrollRef.current.scrollTo({
+          x: currentIndex.current * (SLIDE_W + 16),
+          animated: true,
+        });
+      }
+    }, 4000);
+
+    return () => clearInterval(interval);
+  }, [slides.length]);
+
   return (
-    <ScrollView style={{ flex: 1, backgroundColor: "#fff" }} contentContainerStyle={styles.container}>
-      {/* Header: Title + Points
-      <View style={styles.headerRow}>
-        <Text style={styles.title}>CSa</Text>
-
-        <Pressable onPress={() => router.push("/(tabs)/points")} style={styles.pointsPill} hitSlop={10}>
-          <Ionicons name="star" size={18} color="#fff" />
-          <Text style={styles.pointsText}>{points.toLocaleString()}</Text>
-        </Pressable>
-      </View> */}
-
-      {/* (dev) add 10 points
-      <Pressable onPress={() => addPoints(10)} style={styles.devBtn}>
-        <Text style={{ color: "#fff", fontWeight: "700" }}>+10 test points</Text>
-      </Pressable> */}
-
-      {/* Subheading */}
-      <Text style={styles.subtitle}>Quick categories</Text>
-
-      {/* Category chips */}
-      <View style={styles.grid}>
-        {categories.map((c) => (
-          <Pressable key={c} style={styles.card}>
-            <Text style={styles.cardText}>{c}</Text>
-          </Pressable>
-        ))}
-      </View>
-
-      {/* Slider */}
+    <ScrollView style={{ flex: 1, backgroundColor: BG }} contentContainerStyle={styles.container}>
+      {/* Promotions Slider */}
+      <Text style={styles.sectionTitle}>Promotions</Text>
       <ScrollView
+        ref={scrollRef}
         horizontal
         showsHorizontalScrollIndicator={false}
-        snapToInterval={SLIDE_W + 12}
+        snapToInterval={SLIDE_W + 16}
         decelerationRate="fast"
-        style={{ marginTop: 18 }}
+        scrollEventThrottle={16}
       >
         {slides.map((s, idx) => (
           <View
             key={s.id}
             style={[
               styles.slide,
-              { backgroundColor: s.color, width: SLIDE_W, marginLeft: idx === 0 ? 0 : 12 },
+              { backgroundColor: s.color, width: SLIDE_W, marginLeft: idx === 0 ? 0 : 16 },
             ]}
           >
+            <Image source={{ uri: s.image }} style={styles.slideImage} />
             <Text style={styles.slideTitle}>{s.title}</Text>
-            <Pressable style={styles.slideCta}>
-              <Text style={styles.slideCtaText}>Learn more</Text>
-              <Ionicons name="chevron-forward" size={16} color="#fff" />
-            </Pressable>
           </View>
         ))}
       </ScrollView>
 
-      {/* Two-column: Campaigns & Fun Facts */}
-      <View style={styles.twocol}>
-        <View style={styles.col}>
-          <Text style={styles.sectionTitle}>Ongoing Campaigns</Text>
-          {campaigns.map((c) => (
-            <Pressable key={c.id} style={[styles.tile, { backgroundColor: c.color }]}>
-              <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
-                <Ionicons name="megaphone-outline" color={MATCHA_DEEP} size={18} />
-                <Text style={styles.tileTitle}>{c.title}</Text>
-              </View>
-              <Text style={styles.tileSub}>{c.sub}</Text>
-              <Pressable style={styles.tileBtn}>
-                <Text style={styles.tileBtnText}>View</Text>
-              </Pressable>
-            </Pressable>
-          ))}
-        </View>
+      {/* Featured Campaigns */}
+      <Text style={styles.sectionTitle}>Featured Campaigns</Text>
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        snapToInterval={SQUARE_W + 16}
+        decelerationRate="fast"
+        contentContainerStyle={{ paddingRight: 20 }}
+      >
+        {campaigns.map((c, idx) => (
+          <View
+            key={c.id}
+            style={[
+              styles.square,
+              { backgroundColor: c.color, marginLeft: idx === 0 ? 0 : 16 },
+            ]}
+          >
+            <Image source={{ uri: c.image }} style={styles.campaignImage} />
+            <Text style={styles.squareTitle}>{c.title}</Text>
+            <Text style={styles.squareSub}>{c.sub}</Text>
+          </View>
+        ))}
+      </ScrollView>
 
-        <View style={styles.col}>
-          <Text style={styles.sectionTitle}>Fun Facts</Text>
-          {facts.map((f) => (
-            <View key={f.id} style={[styles.tile, { backgroundColor: "#F7F9FF" }]}>
-              <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
-                <Ionicons name="leaf-outline" color={STRAWB} size={18} />
-                <Text style={styles.tileTitle}>{f.title}</Text>
-              </View>
-            </View>
-          ))}
-        </View>
+      {/* Fun Facts */}
+      <Text style={styles.sectionTitle}>Did You Know?</Text>
+      <View style={styles.grid}>
+        {facts.map((f) => (
+          <View key={f.id} style={[styles.square, { backgroundColor: "#fff" }]}>
+            <Ionicons name="leaf-outline" size={22} color={SECONDARY} />
+            <Text style={styles.squareTitle}>{f.title}</Text>
+          </View>
+        ))}
       </View>
-
-      <Text style={styles.hint}>Not sure? Use the Scan tab below.</Text>
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { paddingTop: 24, paddingHorizontal: 20, paddingBottom: 24 },
-  headerRow: {
-    flexDirection: "row",
+  container: { paddingTop: 30, paddingHorizontal: 20, paddingBottom: 40, gap: 24 },
+  sectionTitle: { fontSize: 18, fontWeight: "800", color: "#0F172A", marginBottom: 12 },
+  slide: {
+    borderRadius: 16,
+    padding: 16,
+    justifyContent: "center",
     alignItems: "center",
-    justifyContent: "space-between",
-    paddingTop: 30,
-  },
-  title: { fontSize: 28, fontWeight: "800", color: "#0F172A" },
-
-  pointsPill: {
-    backgroundColor: STRAWB,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 999,
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 6,
     shadowColor: "#000",
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 4,
+    shadowOpacity: 0.08,
+    shadowRadius: 6,
     elevation: 3,
   },
-  pointsText: { color: "#fff", fontWeight: "800" },
-
-  devBtn: {
-    alignSelf: "flex-start",
-    marginTop: 10,
-    backgroundColor: "#10B981",
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 8,
+  slideImage: {
+    width: "100%",
+    height: 140,
+    borderRadius: 12,
+    marginBottom: 10,
   },
-
-  subtitle: { fontSize: 16, color: "#374151", marginTop: 10, marginBottom: 12 },
-
-  grid: { flexDirection: "row", flexWrap: "wrap", gap: 12 },
-  card: { backgroundColor: CHIP_BG, paddingVertical: 16, paddingHorizontal: 18, borderRadius: 12 },
-  cardText: { fontSize: 16, fontWeight: "700", color: MATCHA_DEEP },
-
-  slide: { borderRadius: 16, padding: 16, minHeight: 120, justifyContent: "space-between" },
-  slideTitle: { fontSize: 16, fontWeight: "800", color: "#0F172A" },
-  slideCta: {
-    alignSelf: "flex-start",
-    backgroundColor: MATCHA_DEEP,
-    borderRadius: 999,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
+  slideTitle: { fontSize: 16, fontWeight: "700", color: "#0F172A", textAlign: "center" },
+  grid: {
     flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
+    gap: 16,
+    marginBottom: 28,
+  },
+  square: {
+    width: SQUARE_W,
+    borderRadius: 16,
+    padding: 10,
     alignItems: "center",
-    gap: 6,
+    shadowColor: "#000",
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2,
   },
-  slideCtaText: { color: "#fff", fontWeight: "700" },
-
-  twocol: { flexDirection: "row", gap: 12, marginTop: 20 },
-  col: { flex: 1, gap: 12 },
-
-  sectionTitle: { fontSize: 16, fontWeight: "800", color: "#0F172A", marginBottom: 2 },
-
-  tile: { borderRadius: 14, padding: 14, gap: 8 },
-  tileTitle: { fontSize: 14, fontWeight: "700", color: "#0F172A", flexShrink: 1 },
-  tileSub: { fontSize: 12, color: "#475569" },
-
-  tileBtn: {
-    alignSelf: "flex-start",
-    backgroundColor: STRAWB,
-    borderRadius: 999,
-    paddingHorizontal: 10,
-    paddingVertical: 6,
-    marginTop: 4,
+  campaignImage: {
+    width: "100%",
+    height: 100,
+    borderRadius: 12,
+    marginBottom: 8,
   },
-  tileBtnText: { color: "#fff", fontWeight: "700", fontSize: 12 },
-
-  hint: { marginTop: 18, color: "#6b7280" },
+  squareTitle: { fontSize: 14, fontWeight: "700", color: "#0F172A", textAlign: "center" },
+  squareSub: { fontSize: 12, color: "#475569", marginTop: 2, textAlign: "center" },
 });
