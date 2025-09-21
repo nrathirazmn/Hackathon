@@ -1,5 +1,5 @@
 # CSa Recycling App
-![Screenshot_20250921_182524_Expo Go](https://github.com/user-attachments/assets/27f0fe7a-ac11-431b-86b2-e2a3a84148a6)
+![Untitledvideo-MadewithClipchamp1-ezgif com-video-to-gif-converter](https://github.com/user-attachments/assets/83fdce20-a283-447b-9a45-f780c8a44618)
 
 ## Problem Statement
 Despite growing awareness of environmental issues, recycling remains a challenge for many in the Petaling district due to:
