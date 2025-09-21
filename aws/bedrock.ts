@@ -4,8 +4,8 @@ import { BedrockRuntimeClient, InvokeModelCommand } from "@aws-sdk/client-bedroc
 const client = new BedrockRuntimeClient({
     region: "us-east-1", // or your Bedrock region
     credentials: {
-        accessKeyId: "AKIASJNMCKANRYVGN2CH",
-        secretAccessKey: "PKK8rOvONIFA/jEN6ywKfiqlHECo6V/c/QZqJpcD",
+        accessKeyId: "",
+        secretAccessKey: "",
     },
   });
 
