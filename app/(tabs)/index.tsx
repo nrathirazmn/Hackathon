@@ -1,10 +1,10 @@
 // app/(tabs)/index.tsx
-import { useEffect, useCallback } from "react";
-import { View, Text, Pressable, StyleSheet, ScrollView, Dimensions } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
-import { router } from "expo-router";
 import { usePoints } from "@/context/points";
+import { Ionicons } from "@expo/vector-icons";
 import { useFocusEffect } from "@react-navigation/native";
+import { useRouter } from "expo-router";
+import { useCallback, useEffect } from "react";
+import { Dimensions, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 
 const MATCHA_DEEP = "#0B4F3F";
 const STRAWB = "#FF6B8B";
@@ -14,6 +14,7 @@ const { width } = Dimensions.get("window");
 const SLIDE_W = width - 40;
 
 export default function HomeScreen() {
+  const router = useRouter();
   const { points, setPoints, addPoints } = usePoints();
 
   // --- mock fetch; replace with your real API call ---
@@ -56,20 +57,19 @@ export default function HomeScreen() {
 
   return (
     <ScrollView style={{ flex: 1, backgroundColor: "#fff" }} contentContainerStyle={styles.container}>
-      {/* Header: Title + Points
-      <View style={styles.headerRow}>
-        <Text style={styles.title}>CSa</Text>
-
-        <Pressable onPress={() => router.push("/(tabs)/points")} style={styles.pointsPill} hitSlop={10}>
-          <Ionicons name="star" size={18} color="#fff" />
-          <Text style={styles.pointsText}>{points.toLocaleString()}</Text>
-        </Pressable>
-      </View> */}
-
-      {/* (dev) add 10 points
-      <Pressable onPress={() => addPoints(10)} style={styles.devBtn}>
-        <Text style={{ color: "#fff", fontWeight: "700" }}>+10 test points</Text>
-      </Pressable> */}
+      {/* Add navigation buttons for testing */}
+      <Pressable
+        style={[styles.devBtn, { backgroundColor: "#2e7dff" }]}
+        onPress={() => router.push("/login")}
+      >
+        <Text style={{ color: "#fff", fontWeight: "700" }}>Go to Login</Text>
+      </Pressable>
+      <Pressable
+        style={[styles.devBtn, { backgroundColor: "#10B981" }]}
+        onPress={() => router.push("/register")}
+      >
+        <Text style={{ color: "#fff", fontWeight: "700" }}>Go to Sign Up</Text>
+      </Pressable>
 
       {/* Subheading */}
       <Text style={styles.subtitle}>Quick categories</Text>
