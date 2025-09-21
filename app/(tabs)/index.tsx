@@ -1,10 +1,11 @@
 // app/(tabs)/index.tsx
-import { useEffect, useCallback } from "react";
-import { View, Text, Pressable, StyleSheet, ScrollView, Dimensions } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
-import { router } from "expo-router";
 import { usePoints } from "@/context/points";
+import { Ionicons } from "@expo/vector-icons";
 import { useFocusEffect } from "@react-navigation/native";
+import { useRouter } from "expo-router";
+import { useCallback, useEffect } from "react";
+import { Dimensions, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import 'react-native-get-random-values';
 
 const MATCHA_DEEP = "#0B4F3F";
 const STRAWB = "#FF6B8B";
@@ -14,6 +15,7 @@ const { width } = Dimensions.get("window");
 const SLIDE_W = width - 40;
 
 export default function HomeScreen() {
+  const router = useRouter();
   const { points, setPoints, addPoints } = usePoints();
 
   // --- mock fetch; replace with your real API call ---
@@ -71,8 +73,15 @@ export default function HomeScreen() {
         <Text style={{ color: "#fff", fontWeight: "700" }}>+10 test points</Text>
       </Pressable> */}
 
-      {/* Subheading */}
-      <Text style={styles.subtitle}>Quick categories</Text>
+      {/* Subheading 
+      <Text style={styles.subtitle}>Quick categories</Text> 
+      */}
+      <TouchableOpacity
+        style={styles.subtitle}
+        onPress={() => router.push({ pathname: "/chatbot"})}
+      >
+        <Text>Open Chatbot Page</Text>
+      </TouchableOpacity>
 
       {/* Category chips */}
       <View style={styles.grid}>
@@ -220,3 +229,4 @@ const styles = StyleSheet.create({
 
   hint: { marginTop: 18, color: "#6b7280" },
 });
+
