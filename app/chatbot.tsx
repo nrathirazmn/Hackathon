@@ -79,7 +79,7 @@ export default function ChatbotScreen() {
         }}
       />
       <SafeAreaProvider>
-        <SafeAreaView style={{ flex: 1, backgroundColor: CHIP_BG }}>
+        <SafeAreaView style={{ flex: 1, backgiroundColor: CHIP_BG }}>
           <KeyboardAvoidingView
             style={styles.container}
             behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -191,6 +191,7 @@ const styles = StyleSheet.create({
     borderColor: "#ccc",
     borderRadius: 6,
     backgroundColor: "#fff",
+    marginBottom: 40,
   },
   btn: {
     marginLeft: 8,
@@ -198,6 +199,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     backgroundColor: STRAWB,
     borderRadius: 6,
+    marginBottom: 40,
   },
   btnText: {
     color: "#fff",
