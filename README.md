@@ -1,8 +1,19 @@
-# Welcome to your Expo app 👋
+# CSa Recycling App
+![Screenshot_20250921_182524_Expo Go](https://github.com/user-attachments/assets/27f0fe7a-ac11-431b-86b2-e2a3a84148a6)
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+## Problem Statement
+Despite growing awareness of environmental issues, recycling remains a challenge for many in the Petaling district due to:
+- Lack of knowledge on how to properly sort recyclable items and where to dispose them
+- Confusion around composite materials, such as poly-coated paper, which often leads to incorrect disposal
+- Inconvenience and low motivation, as recycling is perceived as time-consuming, unclear, and unrewarding
 
-## Get started
+## How to Run the Application Locally
+
+**Prerequisites:**  
+- [Node.js](https://nodejs.org/) installed  
+- [Expo Go](https://expo.dev/go) app installed on your phone (Android/iOS)
+
+**Steps:**
 
 1. Install dependencies
 
@@ -16,35 +27,23 @@ This is an [Expo](https://expo.dev) project created with [`create-expo-app`](htt
    npx expo start
    ```
 
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+3. Run on your device:
+   - Scan the QR code shown in your terminal or browser using the Expo Go app on your phone.
+   - The app will load and run on your device.
 
 You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
 
-## Get a fresh project
+## AWS Tools Used
 
-When you're ready, run:
+- **Amazon SageMaker:**  
+  Used for image classification of recyclable materials via a deployed endpoint.
 
-```bash
-npm run reset-project
-```
+- **AWS Lambda:**  
+  Handles API requests from the app, invokes SageMaker for classification, and returns results.
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+- **Amazon Bedrock:**  
+  Powers the AI chatbot assistant for recycling-related queries.
 
-## Learn more
+---
 
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+For more details, see the source code and documentation in the repository.
