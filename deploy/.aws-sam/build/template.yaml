@@ -1,0 +1,56 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: API -> Lambda -> SageMaker classify
+Globals:
+  Function:
+    Runtime: nodejs20.x
+    Timeout: 15
+    MemorySize: 512
+    Architectures:
+    - x86_64
+Parameters:
+  SageMakerEndpoint:
+    Type: String
+    Description: Name of your SageMaker endpoint (the one serving code/inference.py)
+Resources:
+  HttpApi:
+    Type: AWS::Serverless::HttpApi
+    Properties:
+      CorsConfiguration:
+        AllowOrigins:
+        - '*'
+        AllowHeaders:
+        - content-type
+        AllowMethods:
+        - OPTIONS
+        - POST
+  ClassifyFn:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: index.handler
+      CodeUri: ClassifyFn
+      Environment:
+        Variables:
+          ENDPOINT_NAME:
+            Ref: SageMakerEndpoint
+      Policies:
+      - AWSLambdaBasicExecutionRole
+      - Statement:
+          Effect: Allow
+          Action: sagemaker:InvokeEndpoint
+          Resource: '*'
+      Events:
+        ApiEvent:
+          Type: HttpApi
+          Properties:
+            Path: /classify
+            Method: POST
+            ApiId:
+              Ref: HttpApi
+    Metadata:
+      SamResourceId: ClassifyFn
+Outputs:
+  ApiUrl:
+    Value:
+      Fn::Sub: https://${HttpApi}.execute-api.${AWS::Region}.amazonaws.com
+    Description: Base URL for the HTTP API
